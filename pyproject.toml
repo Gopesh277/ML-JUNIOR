@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mljunior"
+version = "0.1.0"
+description = "ML JUNIOR — reads your dataset, tunes multiple models, saves the best one, and writes an experiment report."
+requires-python = ">=3.9"
+dependencies = [
+    "pandas>=2.0",
+    "numpy>=1.24",
+    "scikit-learn>=1.3",
+    "joblib>=1.3",
+    "openpyxl>=3.1",
+    "pyarrow>=14.0",
+]
+
+[project.optional-dependencies]
+ai = ["anthropic>=0.40.0"]
+
+[project.scripts]
+mljunior = "mljunior.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["mljunior*"]

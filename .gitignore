@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# ML JUNIOR run output (regenerated each run — don't version-control it)
+mljunior_output/
+
+# Editor/OS cruft
+.DS_Store
+.vscode/
+.idea/
+
+# Datasets — comment this out if you DO want to track your data in git
+datasets/*.csv
+datasets/*.xlsx
+datasets/*.json
+datasets/*.parquet
+!datasets/README.md
