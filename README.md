@@ -49,7 +49,16 @@ encoding detection (handles Excel exports that aren't UTF-8).
 6. **Compares metrics** — a final leaderboard (accuracy/F1 for classification — F1 automatically when classes are imbalanced; R2 for regression)
 7. **Saves the best model** — `mljunior_output/best_model.joblib`, a full sklearn Pipeline (preprocessing + model together)
 8. **Generates an experiment report** — `mljunior_output/experiment_report.md`, documenting every step above
+## Seeing the features
 
+```python
+import joblib
+
+saved = joblib.load("mljunior_output/best_model.joblib")
+pipeline = saved["pipeline"]
+
+print(list(pipeline.feature_names_in_))
+```
 ## Using the saved model later
 
 ```python
