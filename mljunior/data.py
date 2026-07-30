@@ -6,21 +6,52 @@ import sys
 import pandas as pd
 
 
+def _sniff_real_format(path: str):
+    """Look at the actual file bytes rather than trusting the extension —
+    it's common for a CSV/text export to be named .xlsx by mistake, or for
+    an old .xls (binary OLE format) to be involved."""
+    try:
+        with open(path, "rb") as f:
+            head = f.read(8)
+    except Exception:
+        return None
+    if head.startswith(b"PK\x03\x04"):
+        return "xlsx"  # modern Excel = a zip file
+    if head.startswith(b"\xd0\xcf\x11\xe0"):
+        return "xls"  # legacy Excel = OLE2 binary format
+    return None
+
+
 def load_data(path: str) -> pd.DataFrame:
     """Load CSV, Excel, JSON, or Parquet. Tries multiple encodings for CSV
-    since real-world files (especially Excel exports) are often not UTF-8."""
+    since real-world files (especially Excel exports) are often not UTF-8.
+    Verifies the real file format by content, not just the extension, since
+    mislabeled files (e.g. a CSV saved with a .xlsx extension) are common."""
     if not os.path.exists(path):
         print(f"Error: file not found: {path}")
         sys.exit(1)
 
     ext = os.path.splitext(path)[1].lower()
+    sniffed = _sniff_real_format(path)
 
-    if ext in (".xlsx", ".xls"):
-        return pd.read_excel(path)
     if ext == ".json":
         return pd.read_json(path)
     if ext == ".parquet":
         return pd.read_parquet(path)
+
+    looks_like_excel = ext in (".xlsx", ".xls") or sniffed is not None
+    if looks_like_excel:
+        engine = "openpyxl" if sniffed == "xlsx" or (sniffed is None and ext == ".xlsx") else "xlrd"
+        try:
+            return pd.read_excel(path, engine=engine)
+        except Exception as e:
+            if ext in (".xlsx", ".xls") and sniffed is None:
+                print(f"Note: '{path}' has an Excel extension but isn't actually Excel "
+                      f"format — reading it as text instead.")
+                # fall through to the CSV/text path below
+            else:
+                print(f"Error: could not read '{path}' as an Excel file ({e}).")
+                sys.exit(1)
 
     # CSV / TSV / anything else: try encodings, sniff delimiter
     last_error = None

@@ -41,7 +41,7 @@ encoding detection (handles Excel exports that aren't UTF-8).
 
 ## What it does — step by step
 
-1. **Reads the dataset** — any of the formats above, profiles rows/columns/missingness/class balance
+1. **Reads and cleans the dataset** — any of the formats above, profiles rows/columns/missingness/class balance
 2. **Identifies the problem type** — classification or regression, from the target column
 3. **Suggests + applies preprocessing** — imputation, one-hot/label encoding, scaling, class-imbalance handling — all explained in plain English before it's applied
 4. **Trains multiple algorithms** — cross-validated quick screen with default hyperparameters
@@ -49,7 +49,8 @@ encoding detection (handles Excel exports that aren't UTF-8).
 6. **Compares metrics** — a final leaderboard (accuracy/F1 for classification — F1 automatically when classes are imbalanced; R2 for regression)
 7. **Saves the best model** — `mljunior_output/best_model.joblib`, a full sklearn Pipeline (preprocessing + model together)
 8. **Generates an experiment report** — `mljunior_output/experiment_report.md`, documenting every step above
-## Seeing the features
+
+##Seeing the features
 
 ```python
 import joblib

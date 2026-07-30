@@ -9,6 +9,10 @@ from sklearn.ensemble import (
     RandomForestClassifier, RandomForestRegressor,
 )
 from sklearn.linear_model import LogisticRegression, LinearRegression
+from sklearn.metrics import (
+    accuracy_score, f1_score, precision_score, recall_score,
+    r2_score, mean_absolute_error, mean_squared_error,
+)
 from sklearn.model_selection import cross_val_score, RandomizedSearchCV
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
@@ -129,3 +133,23 @@ def _grid_size(param_dist: dict) -> int:
     for v in param_dist.values():
         size *= len(v)
     return size
+
+
+def evaluate_on_holdout(pipeline, X_test, y_test, task_type: str) -> dict:
+    """The honest number: how the tuned pipeline performs on data it never
+    saw during training OR hyperparameter search. This — not the CV score
+    from the search — is what should be reported as the model's accuracy."""
+    preds = pipeline.predict(X_test)
+    if task_type == "classification":
+        return {
+            "Accuracy": round(accuracy_score(y_test, preds), 4),
+            "F1": round(f1_score(y_test, preds, average="weighted", zero_division=0), 4),
+            "Precision": round(precision_score(y_test, preds, average="weighted", zero_division=0), 4),
+            "Recall": round(recall_score(y_test, preds, average="weighted", zero_division=0), 4),
+        }
+    else:
+        return {
+            "R2": round(r2_score(y_test, preds), 4),
+            "MAE": round(mean_absolute_error(y_test, preds), 4),
+            "RMSE": round(float(np.sqrt(mean_squared_error(y_test, preds))), 4),
+        }
