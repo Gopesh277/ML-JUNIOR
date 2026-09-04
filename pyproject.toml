@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mljunior"
-version = "0.1.0"
+version = "0.1.1"
 description = "ML JUNIOR — automatically trains, tunes, evaluates, and saves machine learning models."
 readme = "README.md"
 requires-python = ">=3.9"
