@@ -24,11 +24,6 @@ dependencies = [
     "pyarrow>=14.0",
 ]
 
-[project.optional-dependencies]
-ai = [
-    "anthropic>=0.40.0"
-]
-
 [project.scripts]
 mljunior = "mljunior.cli:main"
 
